@@ -27,45 +27,45 @@
     .hint { opacity:.75; font-size: 13px; line-height: 1.4; }
     .big { font-size: 20px; font-weight: 800; }
     .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; background:#222; margin-right: 8px; font-size: 13px; }
+	.grid {
+	  display: grid;
+	  grid-template-columns: 1fr 1fr;
+	  gap: 16px;
+	  margin-top: 20px;
+	}
+
+	.muscle {
+	  background: linear-gradient(145deg, #1e1e1e, #111);
+	  border-radius: 20px;
+	  padding: 50px 0;
+	  text-align: center;
+	  font-size: 28px;
+	  font-weight: 800;
+	  cursor: pointer;
+	  transition: 0.2s;
+	  border: 1px solid #2a2a2a;
+	}
+
+	.muscle:hover {
+	  transform: scale(1.05);
+	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
+	}
   </style>
 </head>
 
 <body>
   <div class="wrap">
-    <div class="card">
-      <div class="big">健身網頁版 APP（PWA）</div>
-      <div class="hint">iPhone：用 Safari 開啟後 → 分享 →「加入主畫面」就會出現桌面圖示。</div>
-    </div>
+   <div class="card">
+    <div class="big">健身訓練 APP</div>
+    <div class="hint">選擇今天要練的部位</div>
+   </div>
 
-    <div class="card">
-      <div class="pill">功能 1</div><span class="big">一RM & 訓練重量</span>
-      <label>重量（kg）</label>
-      <input id="w" type="number" inputmode="decimal" value="80" />
-      <label>次數（reps）</label>
-      <input id="r" type="number" inputmode="numeric" value="5" />
-      <label>公式</label>
-      <select id="formula">
-        <option value="epley">Epley：1RM = w × (1 + reps/30)</option>
-        <option value="brzycki">Brzycki：1RM = w × 36 / (37 - reps)</option>
-      </select>
-
-      <div style="margin-top:12px" class="row">
-        <button onclick="calc()">計算</button>
-        <button onclick="save()">存到本機紀錄</button>
-      </div>
-
-      <div id="out" style="margin-top:12px" class="hint"></div>
-    </div>
-
-    <div class="card">
-      <div class="pill">功能 2</div><span class="big">本機訓練紀錄</span>
-      <div class="hint">存在手機本機（localStorage），不用登入也能用。</div>
-      <div style="margin-top:12px" class="row">
-        <button onclick="renderLog()">刷新列表</button>
-        <button onclick="clearLog()">清空紀錄</button>
-      </div>
-      <div id="log" style="margin-top:12px"></div>
-    </div>
+   <div class="grid">
+     <div class="muscle" onclick="go('shoulder')">肩</div>
+     <div class="muscle" onclick="go('chest')">胸</div>
+     <div class="muscle" onclick="go('legs')">腿</div>
+     <div class="muscle" onclick="go('back')">背</div>
+   </div>
   </div>
 
   <script>
@@ -148,6 +148,10 @@
       localStorage.removeItem("fitapp_log");
       renderLog();
     }
+	
+	function go(part) {
+	  alert("你選擇了：" + part);
+	}
 
     // Service Worker（離線）
     if ("serviceWorker" in navigator) {
