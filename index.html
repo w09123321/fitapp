@@ -18,233 +18,189 @@
   <style>
     :root { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans TC", Arial; }
     body { margin: 0; background:#0b0b0b; color:#fff; }
-    .wrap { max-width: 720px; margin: 0 auto; padding: 16px; }
-    .card { background:#151515; border-radius: 16px; padding: 16px; margin: 12px 0; }
-    label { display:block; margin: 10px 0 6px; opacity: .9; }
-    input, select, button { width:100%; padding: 12px; border-radius: 12px; border: 1px solid #2a2a2a; background:#0f0f0f; color:#fff; }
-    button { border: none; background:#2f7cff; font-weight: 700; }
-    .row { display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-    .hint { opacity:.75; font-size: 13px; line-height: 1.4; }
-    .big { font-size: 20px; font-weight: 800; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 16px; }
+    .card { background:#151515; border-radius: 18px; padding: 16px; margin: 12px 0; border: 1px solid #1f1f1f; }
+    .hint { opacity:.78; font-size: 13px; line-height: 1.45; }
+    .big { font-size: 22px; font-weight: 900; letter-spacing: .5px; }
     .pill { display:inline-block; padding: 6px 10px; border-radius: 999px; background:#222; margin-right: 8px; font-size: 13px; }
-	.grid {
-	  display: grid;
-	  grid-template-columns: 1fr 1fr;
-	  gap: 16px;
-	  margin-top: 20px;
-	}
 
-	.muscle {
-	  background: linear-gradient(145deg, #1e1e1e, #111);
-	  border-radius: 20px;
-	  padding: 50px 0;
-	  text-align: center;
-	  font-size: 28px;
-	  font-weight: 800;
-	  cursor: pointer;
-	  transition: 0.2s;
-	  border: 1px solid #2a2a2a;
-	}
+    /* 首頁四大格 */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-top: 16px;
+    }
+    .muscle {
+      background: linear-gradient(145deg, #1e1e1e, #111);
+      border-radius: 22px;
+      padding: 56px 0;
+      text-align: center;
+      font-size: 30px;
+      font-weight: 900;
+      cursor: pointer;
+      transition: 0.2s;
+      border: 1px solid #2a2a2a;
+      user-select: none;
+    }
+    .muscle:hover { transform: scale(1.03); background: linear-gradient(145deg, #2f7cff, #1a5fd0); }
+    .muscle:active { transform: scale(0.99); }
 
-	.muscle:hover {
-	  transform: scale(1.05);
-	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
-	}
-	.list { margin-top: 12px; display: grid; gap: 10px; }
-	.item {
-	  width: 100%;
-	  padding: 14px 14px;
-	  border-radius: 14px;
-	  border: 1px solid #2a2a2a;
-	  background: #0f0f0f;
-	  color: #fff;
-	  text-align: left;
-	  font-weight: 700;
-	}
-	.item:active { transform: scale(0.99); }
+    /* 第二層：動作清單 */
+    .toprow { display: grid; grid-template-columns: 120px 1fr; gap: 10px; align-items: center; }
+    .ghost {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #2a2a2a;
+      background: transparent;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .ghost:active { transform: scale(0.99); }
 
-	.ghost {
-	  width: 100%;
-	  padding: 12px;
-	  border-radius: 12px;
-	  border: 1px solid #2a2a2a;
-	  background: transparent;
-	  color: #fff;
-	  font-weight: 800;
-	}
+    .picked { text-align: right; }
+    .list { margin-top: 12px; display: grid; gap: 10px; }
+    .item {
+      width: 100%;
+      padding: 14px 14px;
+      border-radius: 14px;
+      border: 1px solid #2a2a2a;
+      background: #0f0f0f;
+      color: #fff;
+      text-align: left;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .item:active { transform: scale(0.99); }
+    .subhint { opacity:.72; font-size: 12px; margin-top: 4px; font-weight: 500; }
 
-	.row { display:grid; grid-template-columns: 140px 1fr; gap: 10px; }
+    /* 小螢幕 */
+    @media (max-width: 420px) {
+      .muscle { font-size: 26px; padding: 52px 0; }
+      .toprow { grid-template-columns: 110px 1fr; }
+    }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-	<div class="card">
-	  <div id="homeTitle" class="big">健身訓練 APP</div>
-	  <div id="homeHint" class="hint">選擇今天要練的部位</div>
-	</div>
+    <div class="card">
+      <div class="big" id="homeTitle">健身訓練 APP</div>
+      <div class="hint" id="homeHint">選擇今天要練的部位</div>
+    </div>
 
-	<!-- 首頁：四大格 -->
-	<div id="grid" class="grid">
-	  <div class="muscle" onclick="go('shoulder')">肩</div>
-	  <div class="muscle" onclick="go('chest')">胸</div>
-	  <div class="muscle" onclick="go('legs')">腿</div>
-	  <div class="muscle" onclick="go('back')">背</div>
-	</div>
+    <!-- 首頁：四大格 -->
+    <div id="grid" class="grid">
+      <div class="muscle" onclick="go('shoulder')">肩</div>
+      <div class="muscle" onclick="go('chest')">胸</div>
+      <div class="muscle" onclick="go('legs')">腿</div>
+      <div class="muscle" onclick="go('back')">背</div>
+    </div>
 
-	<!-- 第二層：動作清單（預設隱藏） -->
-	<div id="detail" class="card" style="display:none;">
-	  <div class="row">
-	    <button class="ghost" onclick="backHome()">← 返回</button>
-		<div id="picked" class="hint" style="text-align:right; align-self:center;"></div>
-	  </div>
+    <!-- 第二層：動作清單 -->
+    <div id="detail" class="card" style="display:none;">
+      <div class="toprow">
+        <button class="ghost" onclick="backHome()">← 返回</button>
+        <div class="picked">
+          <div class="hint" id="pickedLine">請選擇一個動作</div>
+        </div>
+      </div>
 
-	  <div id="list" class="list"></div>
-	</div>
+      <div id="list" class="list"></div>
+      <div class="hint" style="margin-top:12px;">
+        小提示：下一步我們可以把「選動作」接到「輸入重量/次數/組數」或「計算槓片」。
+      </div>
+    </div>
   </div>
 
   <script>
-    function oneRM(w, r, f){
-      if (r <= 0) return 0;
-      if (f === "brzycki"){
-        if (r >= 37) return NaN;
-        return w * 36 / (37 - r);
+    const WORKOUTS = {
+      shoulder: {
+        title: "肩",
+        items: [
+          { name: "啞鈴肩推", note: "前三角為主，穩定核心" },
+          { name: "啞鈴側平舉", note: "中三角，控制離心" },
+          { name: "史密斯肩推", note: "較穩定，可做漸進加重" },
+          { name: "阿諾肩推", note: "活動度 + 肩整體" },
+          { name: "面拉（Face Pull）", note: "後三角 + 肩胛穩定" }
+        ]
+      },
+      chest: {
+        title: "胸",
+        items: [
+          { name: "槓鈴臥推", note: "主力動作，注意肩胛後收" },
+          { name: "啞鈴臥推", note: "活動度更大，控制下放" },
+          { name: "上斜啞鈴臥推", note: "上胸偏重" },
+          { name: "飛鳥", note: "感受伸展，別硬鎖肘" },
+          { name: "雙槓撐體", note: "下胸刺激，量力而為" }
+        ]
+      },
+      legs: {
+        title: "腿",
+        items: [
+          { name: "深蹲", note: "全腿＋核心，注意姿勢" },
+          { name: "腿推", note: "可堆量，膝蓋跟腳尖方向一致" },
+          { name: "腿伸展", note: "股四頭隔離，控制離心" },
+          { name: "腿後勾", note: "腿後側隔離" },
+          { name: "羅馬尼亞硬舉", note: "腿後＋臀，髖折" }
+        ]
+      },
+      back: {
+        title: "背",
+        items: [
+          { name: "引體向上", note: "背闊＋手臂，先練動作感" },
+          { name: "下拉", note: "先把肩胛下壓再拉" },
+          { name: "坐姿划船", note: "中背厚度，避免聳肩" },
+          { name: "單臂啞鈴划船", note: "左右差異修正很棒" },
+          { name: "硬舉", note: "全身後鏈，注意腰背穩定" }
+        ]
       }
-      // epley default
-      return w * (1 + r/30);
+    };
+
+    function go(part) {
+      const data = WORKOUTS[part];
+      if (!data) return;
+
+      document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
+      document.getElementById("homeHint").textContent = "選一個動作開始訓練";
+
+      const list = document.getElementById("list");
+      list.innerHTML = data.items.map(x => `
+        <button class="item" onclick="pick('${part}', '${escapeJS(x.name)}')">
+          ${x.name}
+          <div class="subhint">${x.note ?? ""}</div>
+        </button>
+      `).join("");
+
+      document.getElementById("pickedLine").textContent = "請選擇一個動作";
+
+      document.getElementById("grid").style.display = "none";
+      document.getElementById("detail").style.display = "block";
     }
 
-    function round1(x){ return Math.round(x*10)/10; }
-
-    function calc(){
-      const w = parseFloat(document.getElementById("w").value || "0");
-      const r = parseInt(document.getElementById("r").value || "0", 10);
-      const f = document.getElementById("formula").value;
-
-      const rm = oneRM(w, r, f);
-      if (!isFinite(rm) || rm <= 0){
-        document.getElementById("out").innerHTML = "數值怪怪的，檢查一下重量/次數。";
-        return;
-      }
-
-      // 常見訓練區間：70%~85% 估算
-      const p70 = round1(rm * 0.70);
-      const p80 = round1(rm * 0.80);
-      const p85 = round1(rm * 0.85);
-
-      document.getElementById("out").innerHTML =
-        `估算 1RM：<b>${round1(rm)}</b> kg<br>` +
-        `建議訓練重量：70% ≈ <b>${p70}</b> / 80% ≈ <b>${p80}</b> / 85% ≈ <b>${p85}</b> kg`;
+    function backHome() {
+      document.getElementById("homeTitle").textContent = "健身訓練 APP";
+      document.getElementById("homeHint").textContent = "選擇今天要練的部位";
+      document.getElementById("detail").style.display = "none";
+      document.getElementById("grid").style.display = "grid";
     }
 
-    function loadAll(){
-      return JSON.parse(localStorage.getItem("fitapp_log") || "[]");
-    }
-    function saveAll(list){
-      localStorage.setItem("fitapp_log", JSON.stringify(list));
-    }
-
-    function save(){
-      const w = parseFloat(document.getElementById("w").value || "0");
-      const r = parseInt(document.getElementById("r").value || "0", 10);
-      const f = document.getElementById("formula").value;
-      const rm = oneRM(w, r, f);
-      if (!isFinite(rm) || rm <= 0) return calc();
-
-      const list = loadAll();
-      list.unshift({
-        ts: new Date().toISOString(),
-        w, r, f,
-        rm: round1(rm)
-      });
-      saveAll(list);
-      renderLog();
-      document.getElementById("out").innerHTML += "<br>✅ 已存到本機紀錄";
+    function pick(part, name) {
+      const title = WORKOUTS[part]?.title ?? "";
+      document.getElementById("pickedLine").textContent = `已選擇：${title}｜${name}`;
+      // 下一步：你要加「記錄重量/次數/組數」就從這裡延伸
     }
 
-    function renderLog(){
-      const list = loadAll();
-      const el = document.getElementById("log");
-      if (!list.length){
-        el.innerHTML = "<div class='hint'>目前沒有紀錄。</div>";
-        return;
-      }
-      el.innerHTML = list.slice(0, 30).map(item => {
-        const d = new Date(item.ts);
-        const t = d.toLocaleString();
-        return `<div class="card" style="background:#101010">
-          <div><b>${t}</b></div>
-          <div class="hint">重量 ${item.w}kg × ${item.r} reps（${item.f}）→ 1RM ${item.rm}kg</div>
-        </div>`;
-      }).join("");
+    function escapeJS(s) {
+      return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
     }
 
-    function clearLog(){
-      localStorage.removeItem("fitapp_log");
-      renderLog();
-    }
-	
-	<script>
-	  const WORKOUTS = {
-		shoulder: {
-		  title: "肩",
-		  items: ["啞鈴肩推", "啞鈴側平舉", "史密斯肩推", "阿諾肩推", "面拉（Face Pull）"]
-		},
-		chest: {
-		  title: "胸",
-		  items: ["槓鈴臥推", "啞鈴臥推", "上斜啞鈴臥推", "飛鳥", "雙槓撐體"]
-		},
-		legs: {
-		  title: "腿",
-		  items: ["深蹲", "腿推", "腿伸展", "腿後勾", "羅馬尼亞硬舉"]
-		},
-		back: {
-		  title: "背",
-		  items: ["引體向上", "下拉", "坐姿划船", "單臂啞鈴划船", "硬舉"]
-		}
-	  };
-
-	  function go(part) {
-		const data = WORKOUTS[part];
-		if (!data) return;
-
-		// 切換標題
-		document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
-		document.getElementById("homeHint").textContent = "選一個動作開始訓練";
-
-		// 產生動作清單
-		const list = document.getElementById("list");
-		list.innerHTML = data.items.map(name => `
-		  <button class="item" onclick="pick('${part}', '${name.replace(/'/g, "\\'")}')">${name}</button>
-		`).join("");
-
-		// 顯示清單，隱藏首頁格子
-		document.getElementById("grid").style.display = "none";
-		document.getElementById("detail").style.display = "block";
-	  }
-
-	  function backHome() {
-		document.getElementById("homeTitle").textContent = "健身訓練 APP";
-		document.getElementById("homeHint").textContent = "選擇今天要練的部位";
-
-		document.getElementById("detail").style.display = "none";
-		document.getElementById("grid").style.display = "grid";
-	  }
-
-	  function pick(part, name) {
-		// 先做成「點了進下一步」的占位
-		// 之後你要加：組數/次數/重量記錄、1RM、計算槓片…都從這裡進
-		document.getElementById("picked").textContent = `已選擇：${WORKOUTS[part].title}｜${name}`;
-	  }
-	</script>
-
-    // Service Worker（離線）
+    // Service Worker（離線/PWA）
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
     }
-
-    calc();
-    renderLog();
   </script>
 </body>
 </html>
