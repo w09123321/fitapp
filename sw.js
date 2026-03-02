@@ -1,4 +1,4 @@
-const CACHE = "fitapp-v1";
+const CACHE = "fitapp-v2";
 const ASSETS = [
   "./",
   "./index.html",
@@ -15,4 +15,5 @@ self.addEventListener("fetch", (e) => {
   e.respondWith(
     caches.match(e.request).then((r) => r || fetch(e.request))
   );
+
 });
