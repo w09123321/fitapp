@@ -1,4 +1,4 @@
-const CACHE = "fitapp-v2";
+const CACHE = "fitapp-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -17,3 +17,4 @@ self.addEventListener("fetch", (e) => {
   );
 
 });
+
