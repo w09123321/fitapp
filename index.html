@@ -50,22 +50,57 @@
 	  transform: scale(1.05);
 	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
 	}
+	.list { margin-top: 12px; display: grid; gap: 10px; }
+	.item {
+	  width: 100%;
+	  padding: 14px 14px;
+	  border-radius: 14px;
+	  border: 1px solid #2a2a2a;
+	  background: #0f0f0f;
+	  color: #fff;
+	  text-align: left;
+	  font-weight: 700;
+	}
+	.item:active { transform: scale(0.99); }
+
+	.ghost {
+	  width: 100%;
+	  padding: 12px;
+	  border-radius: 12px;
+	  border: 1px solid #2a2a2a;
+	  background: transparent;
+	  color: #fff;
+	  font-weight: 800;
+	}
+
+	.row { display:grid; grid-template-columns: 140px 1fr; gap: 10px; }
   </style>
 </head>
 
 <body>
   <div class="wrap">
-   <div class="card">
-    <div class="big">健身訓練 APP</div>
-    <div class="hint">選擇今天要練的部位</div>
-   </div>
+	<div class="card">
+	  <div id="homeTitle" class="big">健身訓練 APP</div>
+	  <div id="homeHint" class="hint">選擇今天要練的部位</div>
+	</div>
 
-   <div class="grid">
-     <div class="muscle" onclick="go('shoulder')">肩</div>
-     <div class="muscle" onclick="go('chest')">胸</div>
-     <div class="muscle" onclick="go('legs')">腿</div>
-     <div class="muscle" onclick="go('back')">背</div>
-   </div>
+	<!-- 首頁：四大格 -->
+	<div id="grid" class="grid">
+	  <div class="muscle" onclick="go('shoulder')">肩</div>
+	  <div class="muscle" onclick="go('chest')">胸</div>
+	  <div class="muscle" onclick="go('legs')">腿</div>
+	  <div class="muscle" onclick="go('back')">背</div>
+	</div>
+
+	<!-- 第二層：動作清單（預設隱藏） -->
+	<div id="detail" class="card" style="display:none;">
+	  <div class="row">
+	    <button class="ghost" onclick="backHome()">← 返回</button>
+		<div id="picked" class="hint" style="text-align:right; align-self:center;"></div>
+	  </div>
+
+	  <div id="list" class="list"></div>
+	</div>
   </div>
 
   <script>
@@ -149,9 +184,59 @@
       renderLog();
     }
 	
-	function go(part) {
-	  alert("你選擇了：" + part);
-	}
+	<script>
+	  const WORKOUTS = {
+		shoulder: {
+		  title: "肩",
+		  items: ["啞鈴肩推", "啞鈴側平舉", "史密斯肩推", "阿諾肩推", "面拉（Face Pull）"]
+		},
+		chest: {
+		  title: "胸",
+		  items: ["槓鈴臥推", "啞鈴臥推", "上斜啞鈴臥推", "飛鳥", "雙槓撐體"]
+		},
+		legs: {
+		  title: "腿",
+		  items: ["深蹲", "腿推", "腿伸展", "腿後勾", "羅馬尼亞硬舉"]
+		},
+		back: {
+		  title: "背",
+		  items: ["引體向上", "下拉", "坐姿划船", "單臂啞鈴划船", "硬舉"]
+		}
+	  };
+
+	  function go(part) {
+		const data = WORKOUTS[part];
+		if (!data) return;
+
+		// 切換標題
+		document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
+		document.getElementById("homeHint").textContent = "選一個動作開始訓練";
+
+		// 產生動作清單
+		const list = document.getElementById("list");
+		list.innerHTML = data.items.map(name => `
+		  <button class="item" onclick="pick('${part}', '${name.replace(/'/g, "\\'")}')">${name}</button>
+		`).join("");
+
+		// 顯示清單，隱藏首頁格子
+		document.getElementById("grid").style.display = "none";
+		document.getElementById("detail").style.display = "block";
+	  }
+
+	  function backHome() {
+		document.getElementById("homeTitle").textContent = "健身訓練 APP";
+		document.getElementById("homeHint").textContent = "選擇今天要練的部位";
+
+		document.getElementById("detail").style.display = "none";
+		document.getElementById("grid").style.display = "grid";
+	  }
+
+	  function pick(part, name) {
+		// 先做成「點了進下一步」的占位
+		// 之後你要加：組數/次數/重量記錄、1RM、計算槓片…都從這裡進
+		document.getElementById("picked").textContent = `已選擇：${WORKOUTS[part].title}｜${name}`;
+	  }
+	</script>
 
     // Service Worker（離線）
     if ("serviceWorker" in navigator) {
