@@ -30,6 +30,7 @@
 	  padding-left: 16px;
 	  padding-right: 16px;
 	  box-sizing: border-box;
+	  overflow-y: auto;
 	}
     .wrap {
 	  max-width: 760px;
@@ -90,6 +91,8 @@
       text-align: left;
       font-weight: 800;
       cursor: pointer;
+	  font-size: 22px;
+	  letter-spacing: 0.5px;
     }
     .item:active { transform: scale(0.99); }
     .subhint { opacity:.72; font-size: 12px; margin-top: 4px; font-weight: 500; }
@@ -99,6 +102,42 @@
       .muscle { font-size: 26px; padding: 52px 0; }
       .toprow { grid-template-columns: 110px 1fr; }
     }
+	.unitBtn{
+	  flex:1;
+	  padding: 12px;
+	  border-radius: 12px;
+	  border: 1px solid #2a2a2a;
+	  background: #0f0f0f;
+	  color:#fff;
+	  font-weight: 900;
+	}
+	.unitBtn.active{
+	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
+	  border-color: #2f7cff;
+	}
+
+	.keypad{
+	  margin-top: 14px;
+	  display:grid;
+	  grid-template-columns: repeat(4, 1fr);
+	  gap: 10px;
+	}
+	.key{
+	  padding: 16px 0;
+	  border-radius: 14px;
+	  border: 1px solid #2a2a2a;
+	  background: #0f0f0f;
+	  color:#fff;
+	  font-size: 20px;
+	  font-weight: 900;
+	}
+	.key:active{ transform: scale(0.99); }
+	.keyFn{ background:#161616; }
+	.keyWide{ grid-column: span 2; }
+	.keyPrimary{
+	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
+	  border-color:#2f7cff;
+	}
   </style>
 </head>
 
@@ -106,7 +145,6 @@
   <div class="wrap">
     <div class="card">
       <div class="big" id="homeTitle">健身訓練 APP</div>
-      <div class="hint" id="homeHint">選擇今天要練的部位</div>
     </div>
 
     <!-- 首頁：四大格 -->
@@ -131,6 +169,47 @@
         小提示：下一步我們可以把「選動作」接到「輸入重量/次數/組數」或「計算槓片」。
       </div>
     </div>
+	
+	<!-- 第三層：輸入重量（預設隱藏） -->
+	<div id="entry" class="card" style="display:none;">
+	  <div class="toprow">
+		<button class="ghost" onclick="backToList()">← 返回</button>
+		<div class="picked">
+		  <div class="hint" id="entryTitle">—</div>
+		</div>
+	  </div>
+
+	  <div style="margin-top:12px; display:grid; gap:10px;">
+		<div class="big" id="weightDisplay" style="font-size:34px;">0</div>
+
+		<div style="display:flex; gap:10px;">
+		  <button id="unitKg" class="unitBtn active" onclick="setUnit('kg')">公斤 kg</button>
+		  <button id="unitLb" class="unitBtn" onclick="setUnit('lb')">磅 lb</button>
+		</div>
+	  </div>
+
+	  <div class="keypad">
+		<button class="key" onclick="k('7')">7</button>
+		<button class="key" onclick="k('8')">8</button>
+		<button class="key" onclick="k('9')">9</button>
+		<button class="key keyFn" onclick="backspace()">⌫</button>
+
+		<button class="key" onclick="k('4')">4</button>
+		<button class="key" onclick="k('5')">5</button>
+		<button class="key" onclick="k('6')">6</button>
+		<button class="key keyFn" onclick="clearAll()">C</button>
+
+		<button class="key" onclick="k('1')">1</button>
+		<button class="key" onclick="k('2')">2</button>
+		<button class="key" onclick="k('3')">3</button>
+		<button class="key keyFn" onclick="k('.')">.</button>
+
+		<button class="key keyWide" onclick="k('0')">0</button>
+		<button class="key keyPrimary" onclick="saveOne()">儲存</button>
+	  </div>
+
+	  <div class="hint" id="saveHint" style="margin-top:10px;"></div>
+	</div>
   </div>
 
   <script>
@@ -138,41 +217,41 @@
       shoulder: {
         title: "肩",
         items: [
-          { name: "啞鈴肩推", note: "前三角為主，穩定核心" },
-          { name: "啞鈴側平舉", note: "中三角，控制離心" },
-          { name: "史密斯肩推", note: "較穩定，可做漸進加重" },
-          { name: "阿諾肩推", note: "活動度 + 肩整體" },
-          { name: "面拉（Face Pull）", note: "後三角 + 肩胛穩定" }
+          { name: "啞鈴肩推"},
+          { name: "啞鈴側平舉"},
+          { name: "史密斯肩推"},
+          { name: "阿諾肩推"},
+          { name: "面拉（Face Pull）"}
         ]
       },
       chest: {
         title: "胸",
         items: [
-          { name: "槓鈴臥推", note: "主力動作，注意肩胛後收" },
-          { name: "啞鈴臥推", note: "活動度更大，控制下放" },
-          { name: "上斜啞鈴臥推", note: "上胸偏重" },
-          { name: "飛鳥", note: "感受伸展，別硬鎖肘" },
-          { name: "雙槓撐體", note: "下胸刺激，量力而為" }
+          { name: "槓鈴臥推"},
+          { name: "啞鈴臥推"},
+          { name: "上斜啞鈴臥推"},
+          { name: "飛鳥"},
+          { name: "雙槓撐體"}
         ]
       },
       legs: {
         title: "腿",
         items: [
-          { name: "深蹲", note: "全腿＋核心，注意姿勢" },
-          { name: "腿推", note: "可堆量，膝蓋跟腳尖方向一致" },
-          { name: "腿伸展", note: "股四頭隔離，控制離心" },
-          { name: "腿後勾", note: "腿後側隔離" },
-          { name: "羅馬尼亞硬舉", note: "腿後＋臀，髖折" }
+          { name: "深蹲"},
+          { name: "腿推"},
+          { name: "腿伸展"},
+          { name: "腿後勾"},
+          { name: "羅馬尼亞硬舉"}
         ]
       },
       back: {
         title: "背",
         items: [
-          { name: "引體向上", note: "背闊＋手臂，先練動作感" },
-          { name: "下拉", note: "先把肩胛下壓再拉" },
-          { name: "坐姿划船", note: "中背厚度，避免聳肩" },
-          { name: "單臂啞鈴划船", note: "左右差異修正很棒" },
-          { name: "硬舉", note: "全身後鏈，注意腰背穩定" }
+          { name: "引體向上"},
+          { name: "下拉"},
+          { name: "坐姿划船"},
+          { name: "單臂啞鈴划船"},
+          { name: "硬舉"}
         ]
       }
     };
@@ -182,13 +261,11 @@
       if (!data) return;
 
       document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
-      document.getElementById("homeHint").textContent = "選一個動作開始訓練";
 
       const list = document.getElementById("list");
       list.innerHTML = data.items.map(x => `
         <button class="item" onclick="pick('${part}', '${escapeJS(x.name)}')">
           ${x.name}
-          <div class="subhint">${x.note ?? ""}</div>
         </button>
       `).join("");
 
@@ -200,21 +277,77 @@
 
     function backHome() {
       document.getElementById("homeTitle").textContent = "健身訓練 APP";
-      document.getElementById("homeHint").textContent = "選擇今天要練的部位";
       document.getElementById("detail").style.display = "none";
       document.getElementById("grid").style.display = "grid";
-    }
-
-    function pick(part, name) {
-      const title = WORKOUTS[part]?.title ?? "";
-      document.getElementById("pickedLine").textContent = `已選擇：${title}｜${name}`;
-      // 下一步：你要加「記錄重量/次數/組數」就從這裡延伸
     }
 
     function escapeJS(s) {
       return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
     }
 
+	let currentPart = null;
+	let currentExercise = null;
+	let unit = "kg";
+	let inputStr = "0";
+
+	function pick(part, name){
+	  currentPart = part;
+	  currentExercise = name;
+
+	  document.getElementById("entryTitle").textContent = `已選擇：${WORKOUTS[part].title}｜${name}`;
+	  inputStr = "0";
+	  renderWeight();
+
+	  // 顯示輸入頁，隱藏清單頁
+	  document.getElementById("detail").style.display = "none";
+	  document.getElementById("entry").style.display = "block";
+	}
+
+	function backToList(){
+	  document.getElementById("entry").style.display = "none";
+	  document.getElementById("detail").style.display = "block";
+	  document.getElementById("saveHint").textContent = "";
+	}
+
+	function setUnit(u){
+	  unit = u;
+	  document.getElementById("unitKg").classList.toggle("active", unit==="kg");
+	  document.getElementById("unitLb").classList.toggle("active", unit==="lb");
+	}
+
+	function k(ch){
+	  if (ch === "."){
+		if (inputStr.includes(".")) return;
+		inputStr += ".";
+		renderWeight();
+		return;
+	  }
+	  if (inputStr === "0") inputStr = ch;
+	  else inputStr += ch;
+	  renderWeight();
+	}
+
+	function backspace(){
+	  if (inputStr.length <= 1) inputStr = "0";
+	  else inputStr = inputStr.slice(0, -1);
+	  if (inputStr === "-" || inputStr === "" ) inputStr = "0";
+	  renderWeight();
+	}
+
+	function clearAll(){
+	  inputStr = "0";
+	  renderWeight();
+	}
+
+	function renderWeight(){
+	  document.getElementById("weightDisplay").textContent = `${inputStr} ${unit}`;
+	}
+
+	function saveOne(){
+	  // 先只做「顯示已儲存」：下一步再接 localStorage 訓練紀錄
+	  document.getElementById("saveHint").textContent =
+		`已儲存：${currentExercise}｜${inputStr} ${unit}`;
+	}
     // Service Worker（離線/PWA）
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./sw.js");
