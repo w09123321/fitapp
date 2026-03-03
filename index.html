@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no">
   <title>健身網頁APP</title>
 
   <!-- PWA -->
@@ -138,6 +138,18 @@
 	  background: linear-gradient(145deg, #2f7cff, #1a5fd0);
 	  border-color:#2f7cff;
 	}
+	/* 避免 iOS 點擊後卡住 focus 造成看起來一直被選到 */
+	.muscle:focus,
+	.muscle:focus-visible,
+	.item:focus,
+	.item:focus-visible,
+	button:focus,
+	button:focus-visible {
+	  outline: none;
+	}
+
+	/* 讓 iOS 不要亂高亮點擊 */
+	* { -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 
@@ -279,6 +291,8 @@
       document.getElementById("homeTitle").textContent = "健身訓練 APP";
       document.getElementById("detail").style.display = "none";
       document.getElementById("grid").style.display = "grid";
+	  // 解除 iOS focus，避免返回後卡住反藍
+	  if (document.activeElement) document.activeElement.blur();
     }
 
     function escapeJS(s) {
