@@ -21,19 +21,15 @@
 
 	body {
 	  margin: 0;
-	  background:#0b0b0b;
-	  color:#fff;
+	  background: #0b0b0b;
+	  color: #fff;
 
-	  /* 置中關鍵 */
-	  display: flex;
-	  justify-content: center;   /* 水平置中 */
-	  align-items: center;       /* 垂直置中 */
-
-	  /* 內容變長時仍可滑動 */
-	  min-height: 100dvh;        /* iPhone 更準的視窗高度 */
-	  padding: 16px;
+	  display: grid;
+	  place-items: start center;
+	  padding-top: 80px;
+	  padding-left: 16px;
+	  padding-right: 16px;
 	  box-sizing: border-box;
-	  overflow: auto;
 	}
     .wrap {
 	  max-width: 760px;
