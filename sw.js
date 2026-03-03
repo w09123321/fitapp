@@ -1,4 +1,4 @@
-const CACHE = "fitapp-v8";
+const CACHE = "fitapp-v9";
 const ASSETS = [
   "./",
   "./index.html",
@@ -42,6 +42,7 @@ self.addEventListener("fetch", (e) => {
     caches.match(req).then(r => r || fetch(req))
   );
 });
+
 
 
 
