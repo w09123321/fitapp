@@ -340,6 +340,7 @@
 	  unit = u;
 	  document.getElementById("unitKg").classList.toggle("active", unit==="kg");
 	  document.getElementById("unitLb").classList.toggle("active", unit==="lb");
+	  renderWeight(); // 👈 新增：切換單位立刻同步上方顯示
 	}
 
 	function k(ch){
@@ -382,3 +383,4 @@
   </script>
 </body>
 </html>
+
