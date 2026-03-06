@@ -236,7 +236,16 @@
 	</div>
   </div>
 
-  <script>
+  <script type="module">
+  
+    // Supabase 連線
+	import { createClient } from "https://esm.sh/@supabase/supabase-js@2"
+
+	const supabaseUrl = "https://idkeiylnalrwsplxkybw.supabase.co"
+	const supabaseKey = "sb_publishable_7SC9L3N6dxkQDNQpnVHrvw_DNBKpHMQ"
+
+	const supabase = createClient(supabaseUrl, supabaseKey)
+
     const WORKOUTS = {
       shoulder: {
         title: "肩",
@@ -371,16 +380,33 @@
 	  document.getElementById("weightDisplay").textContent = `${inputStr} ${unit}`;
 	}
 
-	function saveOne(){
-	  // 先只做「顯示已儲存」：下一步再接 localStorage 訓練紀錄
-	  document.getElementById("saveHint").textContent =
-		`已儲存：${currentExercise}｜${inputStr} ${unit}`;
+	async function saveOne(){
+
+	  const { data: { user } } = await supabase.auth.getUser()
+
+	  if(!user){
+		document.getElementById("saveHint").textContent = "請先登入"
+		return
+	  }
+
+	  const { error } = await supabase
+		.from("workouts")
+		.insert([
+		  {
+			user_id: user.id,
+			note: `${currentExercise} ${inputStr} ${unit}`
+		  }
+		])
+
+	  if(error){
+		document.getElementById("saveHint").textContent = "儲存失敗"
+	  }else{
+		document.getElementById("saveHint").textContent =
+		  `已儲存：${currentExercise}｜${inputStr} ${unit}`
+	  }
 	}
-    // Service Worker（離線/PWA）
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("./sw.js");
-    }
   </script>
 </body>
 </html>
+
 
