@@ -178,7 +178,7 @@
 		  style="width:100%; padding:12px; border-radius:12px; border:1px solid #2a2a2a; background:#0f0f0f; color:#fff; box-sizing:border-box;"
 		>
 
-		<button class="ghost" onclick="loginEmail()">寄送登入連結</button>
+		<button id="loginBtn" class="ghost" onclick="loginEmail()">寄送登入連結</button>
 
 		<div id="loginMsg" class="hint"></div>
 		<div id="userInfo" class="hint" style="display:none;"></div>
@@ -204,9 +204,7 @@
       </div>
 
       <div id="list" class="list"></div>
-      <div class="hint" style="margin-top:12px;">
-        小提示：下一步我們可以把「選動作」接到「輸入重量/次數/組數」或「計算槓片」。
-      </div>
+
     </div>
 	
 	<!-- 第三層：輸入重量（預設隱藏） -->
@@ -463,17 +461,20 @@
 
 	function updateAuthUI(user){
 	  const emailInput = document.getElementById("emailInput");
+	  const loginBtn = document.getElementById("loginBtn");
 	  const userInfo = document.getElementById("userInfo");
 	  const logoutBtn = document.getElementById("logoutBtn");
 
 	  if(user){
 		emailInput.style.display = "none";
+		loginBtn.style.display = "none";
 		userInfo.style.display = "block";
 		logoutBtn.style.display = "block";
 		userInfo.textContent = `目前登入：${user.email}`;
 		setLoginMsg("");
 	  }else{
 		emailInput.style.display = "block";
+		loginBtn.style.display = "block";
 		userInfo.style.display = "none";
 		logoutBtn.style.display = "none";
 		userInfo.textContent = "";
