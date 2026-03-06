@@ -168,8 +168,23 @@
 <body>
   <div class="wrap">
     <div class="card">
-      <div class="big" id="homeTitle">健身訓練 APP</div>
-    </div>
+	  <div class="big" id="homeTitle">健身訓練 APP</div>
+
+	  <div id="loginBox" style="margin-top:12px; display:grid; gap:10px;">
+		<input
+		  id="emailInput"
+		  type="email"
+		  placeholder="輸入 Email 登入"
+		  style="width:100%; padding:12px; border-radius:12px; border:1px solid #2a2a2a; background:#0f0f0f; color:#fff; box-sizing:border-box;"
+		>
+
+		<button class="ghost" onclick="loginEmail()">寄送登入連結</button>
+
+		<div id="loginMsg" class="hint"></div>
+		<div id="userInfo" class="hint" style="display:none;"></div>
+		<button id="logoutBtn" class="ghost" onclick="logout()" style="display:none;">登出</button>
+	  </div>
+	</div>
 
     <!-- 首頁：四大格 -->
     <div id="grid" class="grid">
@@ -406,6 +421,76 @@
 	  }
 	}
 	
+	function setLoginMsg(text){
+	  document.getElementById("loginMsg").textContent = text;
+	}
+
+	async function loginEmail(){
+	  const email = document.getElementById("emailInput").value.trim();
+
+	  if(!email){
+		setLoginMsg("請先輸入 Email");
+		return;
+	  }
+
+	  setLoginMsg("寄送登入信中...");
+
+	  const { error } = await supabase.auth.signInWithOtp({
+		email,
+		options: {
+		  emailRedirectTo: window.location.href
+		}
+	  });
+
+	  if(error){
+		setLoginMsg("登入信寄送失敗：" + error.message);
+	  }else{
+		setLoginMsg("✅ 已寄出登入信，請到信箱點擊連結登入");
+	  }
+	}
+
+	async function logout(){
+	  const { error } = await supabase.auth.signOut();
+
+	  if(error){
+		setLoginMsg("登出失敗：" + error.message);
+		return;
+	  }
+
+	  updateAuthUI(null);
+	  setLoginMsg("已登出");
+	}
+
+	function updateAuthUI(user){
+	  const emailInput = document.getElementById("emailInput");
+	  const userInfo = document.getElementById("userInfo");
+	  const logoutBtn = document.getElementById("logoutBtn");
+
+	  if(user){
+		emailInput.style.display = "none";
+		userInfo.style.display = "block";
+		logoutBtn.style.display = "block";
+		userInfo.textContent = `目前登入：${user.email}`;
+		setLoginMsg("");
+	  }else{
+		emailInput.style.display = "block";
+		userInfo.style.display = "none";
+		logoutBtn.style.display = "none";
+		userInfo.textContent = "";
+	  }
+	}
+
+	async function checkLogin(){
+	  const { data, error } = await supabase.auth.getUser();
+
+	  if(error || !data.user){
+		updateAuthUI(null);
+		return;
+	  }
+
+	  updateAuthUI(data.user);
+	}
+	
 	window.go = go;
 	window.backHome = backHome;
 	window.pick = pick;
@@ -415,6 +500,14 @@
 	window.backspace = backspace;
 	window.clearAll = clearAll;
 	window.saveOne = saveOne;
+	window.loginEmail = loginEmail;
+	window.logout = logout;
+	window.checkLogin = checkLogin;
+	supabase.auth.onAuthStateChange((_event, session) => {
+	  updateAuthUI(session?.user ?? null);
+	});
+
+	checkLogin();
   </script>
 </body>
 </html>
