@@ -170,29 +170,41 @@
     <div class="card">
 	  <div class="big" id="homeTitle">健身訓練 APP</div>
 
-	  <div id="loginBox" style="margin-top:12px; display:grid; gap:10px;">
-		<input
-		  id="emailInput"
-		  type="email"
-		  placeholder="輸入 Email 登入"
-		  style="width:100%; padding:12px; border-radius:12px; border:1px solid #2a2a2a; background:#0f0f0f; color:#fff; box-sizing:border-box;"
-		>
+		<div id="loginBox" style="margin-top:12px; display:grid; gap:10px;">
+		  <input
+			id="emailInput"
+			type="email"
+			placeholder="輸入 Email"
+			style="width:100%; padding:12px; border-radius:12px; border:1px solid #2a2a2a; background:#0f0f0f; color:#fff; box-sizing:border-box;"
+		  >
 
-		<button id="loginBtn" class="ghost" onclick="loginEmail()">寄送登入連結</button>
+		  <input
+			id="passwordInput"
+			type="password"
+			placeholder="輸入密碼"
+			style="width:100%; padding:12px; border-radius:12px; border:1px solid #2a2a2a; background:#0f0f0f; color:#fff; box-sizing:border-box;"
+		  >
 
-		<div id="loginMsg" class="hint"></div>
-		<div id="userInfo" class="hint" style="display:none;"></div>
-		<button id="logoutBtn" class="ghost" onclick="logout()" style="display:none;">登出</button>
-	  </div>
+		  <button id="loginBtn" class="ghost" onclick="loginPassword()">登入</button>
+		  <button id="signupBtn" class="ghost" onclick="signupPassword()">註冊</button>
+
+		  <div id="loginMsg" class="hint"></div>
+		  <div id="userInfo" class="hint" style="display:none;"></div>
+		  <button id="logoutBtn" class="ghost" onclick="logout()" style="display:none;">登出</button>
+		</div>
 	</div>
 
     <!-- 首頁：四大格 -->
-    <div id="grid" class="grid">
-      <div class="muscle" onclick="go('shoulder')">肩</div>
-      <div class="muscle" onclick="go('chest')">胸</div>
-      <div class="muscle" onclick="go('legs')">腿</div>
-      <div class="muscle" onclick="go('back')">背</div>
-    </div>
+    <div id="appArea" style="display:none;">
+
+	  <div id="grid" class="grid">
+		<div class="muscle" onclick="go('shoulder')">肩</div>
+		<div class="muscle" onclick="go('chest')">胸</div>
+		<div class="muscle" onclick="go('legs')">腿</div>
+		<div class="muscle" onclick="go('back')">背</div>
+	  </div>
+
+	</div>
 
     <!-- 第二層：動作清單 -->
     <div id="detail" class="card" style="display:none;">
@@ -419,31 +431,54 @@
 	  }
 	}
 	
+
 	function setLoginMsg(text){
 	  document.getElementById("loginMsg").textContent = text;
 	}
 
-	async function loginEmail(){
+	async function signupPassword(){
 	  const email = document.getElementById("emailInput").value.trim();
+	  const password = document.getElementById("passwordInput").value.trim();
 
-	  if(!email){
-		setLoginMsg("請先輸入 Email");
+	  if(!email || !password){
+		setLoginMsg("請輸入 Email 和密碼");
 		return;
 	  }
 
-	  setLoginMsg("寄送登入信中...");
+	  setLoginMsg("註冊中...");
 
-	  const { error } = await supabase.auth.signInWithOtp({
+	  const { error } = await supabase.auth.signUp({
 		email,
-		options: {
-		  emailRedirectTo: window.location.href
-		}
+		password
 	  });
 
 	  if(error){
-		setLoginMsg("登入信寄送失敗：" + error.message);
+		setLoginMsg("註冊失敗：" + error.message);
 	  }else{
-		setLoginMsg("✅ 已寄出登入信，請到信箱點擊連結登入");
+		setLoginMsg("✅ 註冊成功，現在可以登入");
+	  }
+	}
+
+	async function loginPassword(){
+	  const email = document.getElementById("emailInput").value.trim();
+	  const password = document.getElementById("passwordInput").value.trim();
+
+	  if(!email || !password){
+		setLoginMsg("請輸入 Email 和密碼");
+		return;
+	  }
+
+	  setLoginMsg("登入中...");
+
+	  const { error } = await supabase.auth.signInWithPassword({
+		email,
+		password
+	  });
+
+	  if(error){
+		setLoginMsg("登入失敗：" + error.message);
+	  }else{
+		setLoginMsg("✅ 登入成功");
 	  }
 	}
 
@@ -461,22 +496,33 @@
 
 	function updateAuthUI(user){
 	  const emailInput = document.getElementById("emailInput");
+	  const passwordInput = document.getElementById("passwordInput");
 	  const loginBtn = document.getElementById("loginBtn");
+	  const signupBtn = document.getElementById("signupBtn");
 	  const userInfo = document.getElementById("userInfo");
 	  const logoutBtn = document.getElementById("logoutBtn");
+	  const appArea = document.getElementById("appArea");
 
 	  if(user){
 		emailInput.style.display = "none";
+		passwordInput.style.display = "none";
 		loginBtn.style.display = "none";
+		signupBtn.style.display = "none";
 		userInfo.style.display = "block";
 		logoutBtn.style.display = "block";
+		appArea.style.display = "block";
+
 		userInfo.textContent = `目前登入：${user.email}`;
 		setLoginMsg("");
 	  }else{
 		emailInput.style.display = "block";
+		passwordInput.style.display = "block";
 		loginBtn.style.display = "block";
+		signupBtn.style.display = "block";
 		userInfo.style.display = "none";
 		logoutBtn.style.display = "none";
+		appArea.style.display = "none";
+
 		userInfo.textContent = "";
 	  }
 	}
@@ -501,9 +547,10 @@
 	window.backspace = backspace;
 	window.clearAll = clearAll;
 	window.saveOne = saveOne;
-	window.loginEmail = loginEmail;
 	window.logout = logout;
 	window.checkLogin = checkLogin;
+	window.loginPassword = loginPassword;
+	window.signupPassword = signupPassword;
 	supabase.auth.onAuthStateChange((_event, session) => {
 	  updateAuthUI(session?.user ?? null);
 	});
