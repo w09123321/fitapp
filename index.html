@@ -186,7 +186,6 @@
 		  >
 
 		  <button id="loginBtn" class="ghost" onclick="loginPassword()">登入</button>
-		  <button id="signupBtn" class="ghost" onclick="signupPassword()">註冊</button>
 
 		  <div id="loginMsg" class="hint"></div>
 		  <div id="userInfo" class="hint" style="display:none;"></div>
@@ -435,7 +434,11 @@
 	function setLoginMsg(text){
 	  document.getElementById("loginMsg").textContent = text;
 	}
-
+	
+	async function signupPassword(){
+	  setLoginMsg("目前已關閉註冊功能，請使用既有帳號登入");
+	}
+	/*
 	async function signupPassword(){
 	  const email = document.getElementById("emailInput").value.trim();
 	  const password = document.getElementById("passwordInput").value.trim();
@@ -458,6 +461,7 @@
 		setLoginMsg("✅ 註冊成功，現在可以登入");
 	  }
 	}
+	*/
 
 	async function loginPassword(){
 	  const email = document.getElementById("emailInput").value.trim();
@@ -498,7 +502,7 @@
 	  const emailInput = document.getElementById("emailInput");
 	  const passwordInput = document.getElementById("passwordInput");
 	  const loginBtn = document.getElementById("loginBtn");
-	  const signupBtn = document.getElementById("signupBtn");
+	  //const signupBtn = document.getElementById("signupBtn");
 	  const userInfo = document.getElementById("userInfo");
 	  const logoutBtn = document.getElementById("logoutBtn");
 	  const appArea = document.getElementById("appArea");
@@ -507,7 +511,7 @@
 		emailInput.style.display = "none";
 		passwordInput.style.display = "none";
 		loginBtn.style.display = "none";
-		signupBtn.style.display = "none";
+		//signupBtn.style.display = "none";
 		userInfo.style.display = "block";
 		logoutBtn.style.display = "block";
 		appArea.style.display = "block";
@@ -518,7 +522,7 @@
 		emailInput.style.display = "block";
 		passwordInput.style.display = "block";
 		loginBtn.style.display = "block";
-		signupBtn.style.display = "block";
+		//signupBtn.style.display = "block";
 		userInfo.style.display = "none";
 		logoutBtn.style.display = "none";
 		appArea.style.display = "none";
