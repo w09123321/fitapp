@@ -311,6 +311,10 @@
 	  <div id="list" class="list"></div>
 	</div>
 
+	<div id="detailQueryCard" class="card" style="display:none;">
+	  <button class="queryBtn" onclick="openHistory()">查詢</button>
+	</div>
+
     <!-- 第三層：輸入重量 -->
     <div id="entry" class="card" style="display:none;">
       <div class="toprow">
@@ -421,6 +425,7 @@
 	  document.getElementById("appArea").style.display = "none";
 	  document.getElementById("detail").style.display = "block";
 	  document.getElementById("detailListCard").style.display = "block";
+	  document.getElementById("detailQueryCard").style.display = "block";
 	  document.getElementById("entry").style.display = "none";
 	  document.getElementById("userCard").style.display = "none";
 	}
@@ -429,6 +434,7 @@
 	  document.getElementById("homeTitle").textContent = "健身訓練 APP";
 	  document.getElementById("detail").style.display = "none";
 	  document.getElementById("detailListCard").style.display = "none";
+	  document.getElementById("detailQueryCard").style.display = "none";
 	  document.getElementById("entry").style.display = "none";
 	  document.getElementById("appArea").style.display = "block";
 	  document.getElementById("grid").style.display = "grid";
@@ -446,27 +452,29 @@
     let inputStr = "0";
 
     function pick(part, name){
-      currentPart = part;
-      currentExercise = name;
+	  currentPart = part;
+	  currentExercise = name;
 
-      document.getElementById("entryTitle").textContent = `已選擇：${WORKOUTS[part].title}｜${name}`;
-      inputStr = "0";
-      renderWeight();
+	  document.getElementById("entryTitle").textContent = `已選擇：${WORKOUTS[part].title}｜${name}`;
+	  inputStr = "0";
+	  renderWeight();
 
-      document.getElementById("detail").style.display = "none";
+	  document.getElementById("detail").style.display = "none";
 	  document.getElementById("detailListCard").style.display = "none";
-      document.getElementById("entry").style.display = "block";
+	  document.getElementById("detailQueryCard").style.display = "none";
+	  document.getElementById("entry").style.display = "block";
 	  document.getElementById("userCard").style.display = "none";
-    }
+	}
 
     function backToList(){
-      document.getElementById("entry").style.display = "none";
-      document.getElementById("detail").style.display = "block";
+	  document.getElementById("entry").style.display = "none";
+	  document.getElementById("detail").style.display = "block";
 	  document.getElementById("detailListCard").style.display = "block";
+	  document.getElementById("detailQueryCard").style.display = "block";
 	  document.getElementById("userCard").style.display = "none";
-      document.getElementById("saveHint").textContent = "";
-      if (document.activeElement) document.activeElement.blur();
-    }
+	  document.getElementById("saveHint").textContent = "";
+	  if (document.activeElement) document.activeElement.blur();
+	}
 
     function setUnit(u){
       unit = u;
