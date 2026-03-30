@@ -1,4 +1,4 @@
-const CACHE = "fitapp-v16";
+const CACHE = "fitapp-v17";
 const ASSETS = [
   "./",
   "./index.html",
