@@ -229,6 +229,35 @@
 	.queryBtn:active{
 	  transform: scale(0.99);
 	}
+	
+	.historyDate{
+	  font-size: 20px;
+	  font-weight: 900;
+	  margin: 6px 0 10px 0;
+	}
+
+	.historyGroup{
+	  margin-bottom: 18px;
+	}
+
+	.historyRow{
+	  padding: 14px;
+	  border-radius: 14px;
+	  border: 1px solid #2a2a2a;
+	  background: #0f0f0f;
+	  margin-bottom: 10px;
+	}
+
+	.historyNote{
+	  font-size: 20px;
+	  font-weight: 800;
+	}
+
+	.historyTime{
+	  margin-top: 6px;
+	  opacity: .7;
+	  font-size: 12px;
+	}
 
     .muscle:focus,
     .muscle:focus-visible,
@@ -313,6 +342,21 @@
 
 	<div id="detailQueryCard" class="card" style="display:none;">
 	  <button class="queryBtn" onclick="openHistory()">查詢</button>
+	</div>
+	
+	<div id="historyPage" style="display:none;">
+	  <div class="card">
+		<div class="toprow">
+		  <button class="ghost" onclick="backFromHistory()">← 返回</button>
+		  <div class="picked">
+			<div class="hint">最近 10 筆紀錄</div>
+		  </div>
+		</div>
+	  </div>
+
+	  <div class="card">
+		<div id="historyList"></div>
+	  </div>
 	</div>
 
     <!-- 第三層：輸入重量 -->
@@ -636,8 +680,89 @@
       }
     }
 	
-	function openHistory(){
-	  alert("之後這裡會開啟查詢頁面");
+	function backFromHistory(){
+	  document.getElementById("historyPage").style.display = "none";
+	  document.getElementById("userCard").style.display = "block";
+	  document.getElementById("appArea").style.display = "block";
+	}
+	
+	async function loadRecentHistory(){
+	  const historyList = document.getElementById("historyList");
+	  historyList.innerHTML = `<div class="hint">載入中...</div>`;
+
+	  const { data: { user } } = await supabase.auth.getUser();
+
+	  if(!user){
+		historyList.innerHTML = `<div class="hint">請先登入</div>`;
+		return;
+	  }
+
+	  const { data, error } = await supabase
+		.from("workouts")
+		.select("id, workout_date, note, created_at")
+		.eq("user_id", user.id)
+		.order("created_at", { ascending: false })
+		.limit(10);
+
+	  if(error){
+		historyList.innerHTML = `<div class="hint">查詢失敗</div>`;
+		return;
+	  }
+
+	  if(!data || data.length === 0){
+		historyList.innerHTML = `<div class="hint">目前沒有資料</div>`;
+		return;
+	  }
+
+	  const groups = {};
+	  for (const row of data) {
+		const dateKey = row.workout_date || "未分類日期";
+		if (!groups[dateKey]) groups[dateKey] = [];
+		groups[dateKey].push(row);
+	  }
+
+	  const html = Object.keys(groups).map(dateKey => {
+		const rowsHtml = groups[dateKey].map(row => {
+		  const timeText = row.created_at
+			? new Date(row.created_at).toLocaleString("zh-TW", {
+				hour12: false,
+				year: "numeric",
+				month: "2-digit",
+				day: "2-digit",
+				hour: "2-digit",
+				minute: "2-digit"
+			  })
+			: "";
+
+		  return `
+			<div class="historyRow">
+			  <div class="historyNote">${row.note || "-"}</div>
+			  <div class="historyTime">${timeText}</div>
+			</div>
+		  `;
+		}).join("");
+
+		return `
+		  <div class="historyGroup">
+			<div class="historyDate">${dateKey}</div>
+			${rowsHtml}
+		  </div>
+		`;
+	  }).join("");
+
+	  historyList.innerHTML = html;
+	}
+	
+	async function openHistory(){
+	  document.getElementById("userCard").style.display = "none";
+	  document.getElementById("appArea").style.display = "none";
+	  document.getElementById("detail").style.display = "none";
+	  document.getElementById("detailListCard").style.display = "none";
+	  document.getElementById("detailQueryCard").style.display = "none";
+	  document.getElementById("entry").style.display = "none";
+	  document.getElementById("historyPage").style.display = "block";
+
+	  await loadRecentHistory();
 	}
 
     async function checkLogin(){
@@ -664,6 +789,8 @@
     window.checkLogin = checkLogin;
     window.loginPassword = loginPassword;
 	window.openHistory = openHistory;
+	window.openHistory = openHistory;
+	window.backFromHistory = backFromHistory;
 
     supabase.auth.onAuthStateChange((_event, session) => {
       updateAuthUI(session?.user ?? null);
