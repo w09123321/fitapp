@@ -227,7 +227,7 @@
 
 <body>
   <div class="wrap">
-    <div class="card">
+    <div class="card" id="userCard">
       <div class="big" id="homeTitle">健身訓練 APP</div>
 
       <div id="loginBox" style="margin-top:12px; display:grid; gap:10px;">
@@ -393,12 +393,14 @@
 
       document.getElementById("grid").style.display = "none";
       document.getElementById("detail").style.display = "block";
+	  document.getElementById("userCard").style.display = "none";
     }
 
     function backHome() {
       document.getElementById("homeTitle").textContent = "健身訓練 APP";
       document.getElementById("detail").style.display = "none";
       document.getElementById("grid").style.display = "grid";
+	  document.getElementById("userCard").style.display = "block";
       if (document.activeElement) document.activeElement.blur();
     }
 
@@ -421,11 +423,13 @@
 
       document.getElementById("detail").style.display = "none";
       document.getElementById("entry").style.display = "block";
+	  document.getElementById("userCard").style.display = "none";
     }
 
     function backToList(){
       document.getElementById("entry").style.display = "none";
       document.getElementById("detail").style.display = "block";
+	  document.getElementById("userCard").style.display = "none";
       document.getElementById("saveHint").textContent = "";
       if (document.activeElement) document.activeElement.blur();
     }
