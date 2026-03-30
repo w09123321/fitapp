@@ -230,31 +230,52 @@
 	  transform: scale(0.99);
 	}
 	
-	.historyDate{
-	  font-size: 20px;
+	.historyDateBtn{
+	  width: 100%;
+	  padding: 12px 14px;
+	  border-radius: 14px;
+	  border: 1px solid #2a2a2a;
+	  background: #101010;
+	  color: #fff;
+	  font-size: 18px;
 	  font-weight: 900;
-	  margin: 6px 0 10px 0;
+	  text-align: left;
+	  cursor: pointer;
+	}
+
+	.historyDateBtn:active{
+	  transform: scale(0.99);
 	}
 
 	.historyGroup{
-	  margin-bottom: 18px;
+	  margin-bottom: 12px;
+	}
+
+	.historyItems{
+	  display: none;
+	  margin-top: 10px;
+	  padding-left: 8px;
+	}
+
+	.historyItems.show{
+	  display: block;
 	}
 
 	.historyRow{
-	  padding: 14px;
-	  border-radius: 14px;
+	  padding: 10px 12px;
+	  border-radius: 12px;
 	  border: 1px solid #2a2a2a;
 	  background: #0f0f0f;
-	  margin-bottom: 10px;
+	  margin-bottom: 8px;
 	}
 
 	.historyNote{
-	  font-size: 20px;
+	  font-size: 16px;
 	  font-weight: 800;
 	}
 
 	.historyTime{
-	  margin-top: 6px;
+	  margin-top: 4px;
 	  opacity: .7;
 	  font-size: 12px;
 	}
@@ -686,6 +707,12 @@
 	  document.getElementById("appArea").style.display = "block";
 	}
 	
+	function toggleHistoryGroup(groupId){
+	  const el = document.getElementById(groupId);
+	  if(!el) return;
+	  el.classList.toggle("show");
+	}
+	
 	async function loadRecentHistory(){
 	  const historyList = document.getElementById("historyList");
 	  historyList.innerHTML = `<div class="hint">載入中...</div>`;
@@ -721,8 +748,8 @@
 		groups[dateKey].push(row);
 	  }
 
-	  const html = Object.keys(groups).map(dateKey => {
-		const rowsHtml = groups[dateKey].map(row => {
+	  const html = Object.keys(groups).map((dateKey, index) => {
+		const itemsHtml = groups[dateKey].map(row => {
 		  const timeText = row.created_at
 			? new Date(row.created_at).toLocaleString("zh-TW", {
 				hour12: false,
@@ -744,8 +771,12 @@
 
 		return `
 		  <div class="historyGroup">
-			<div class="historyDate">${dateKey}</div>
-			${rowsHtml}
+			<button class="historyDateBtn" onclick="toggleHistoryGroup('group-${index}')">
+			  ${dateKey}
+			</button>
+			<div id="group-${index}" class="historyItems">
+			  ${itemsHtml}
+			</div>
 		  </div>
 		`;
 	  }).join("");
@@ -791,6 +822,7 @@
 	window.openHistory = openHistory;
 	window.openHistory = openHistory;
 	window.backFromHistory = backFromHistory;
+	window.toggleHistoryGroup = toggleHistoryGroup;
 
     supabase.auth.onAuthStateChange((_event, session) => {
       updateAuthUI(session?.user ?? null);
