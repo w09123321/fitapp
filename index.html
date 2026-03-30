@@ -305,8 +305,11 @@
         </div>
       </div>
 
-      <div id="list" class="list"></div>
     </div>
+	
+	<div id="detailListCard" class="card" style="display:none;">
+	  <div id="list" class="list"></div>
+	</div>
 
     <!-- 第三層：輸入重量 -->
     <div id="entry" class="card" style="display:none;">
@@ -401,32 +404,37 @@
     };
 
     function go(part) {
-      const data = WORKOUTS[part];
-      if (!data) return;
+	  const data = WORKOUTS[part];
+	  if (!data) return;
 
-      document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
+	  document.getElementById("homeTitle").textContent = `${data.title}｜動作選擇`;
 
-      const list = document.getElementById("list");
-      list.innerHTML = data.items.map(x => `
-        <button class="item" onclick="pick('${part}', '${escapeJS(x.name)}')">
-          ${x.name}
-        </button>
-      `).join("");
+	  const list = document.getElementById("list");
+	  list.innerHTML = data.items.map(x => `
+		<button class="item" onclick="pick('${part}', '${escapeJS(x.name)}')">
+		  ${x.name}
+		</button>
+	  `).join("");
 
-      document.getElementById("pickedLine").textContent = "請選擇一個動作";
+	  document.getElementById("pickedLine").textContent = "請選擇一個動作";
 
-      document.getElementById("grid").style.display = "none";
-      document.getElementById("detail").style.display = "block";
+	  document.getElementById("appArea").style.display = "none";
+	  document.getElementById("detail").style.display = "block";
+	  document.getElementById("detailListCard").style.display = "block";
+	  document.getElementById("entry").style.display = "none";
 	  document.getElementById("userCard").style.display = "none";
-    }
+	}
 
     function backHome() {
-      document.getElementById("homeTitle").textContent = "健身訓練 APP";
-      document.getElementById("detail").style.display = "none";
-      document.getElementById("grid").style.display = "grid";
+	  document.getElementById("homeTitle").textContent = "健身訓練 APP";
+	  document.getElementById("detail").style.display = "none";
+	  document.getElementById("detailListCard").style.display = "none";
+	  document.getElementById("entry").style.display = "none";
+	  document.getElementById("appArea").style.display = "block";
+	  document.getElementById("grid").style.display = "grid";
 	  document.getElementById("userCard").style.display = "block";
-      if (document.activeElement) document.activeElement.blur();
-    }
+	  if (document.activeElement) document.activeElement.blur();
+	}
 
     function escapeJS(s) {
       return String(s).replace(/\\/g, "\\\\").replace(/'/g, "\\'");
@@ -446,6 +454,7 @@
       renderWeight();
 
       document.getElementById("detail").style.display = "none";
+	  document.getElementById("detailListCard").style.display = "none";
       document.getElementById("entry").style.display = "block";
 	  document.getElementById("userCard").style.display = "none";
     }
@@ -453,6 +462,7 @@
     function backToList(){
       document.getElementById("entry").style.display = "none";
       document.getElementById("detail").style.display = "block";
+	  document.getElementById("detailListCard").style.display = "block";
 	  document.getElementById("userCard").style.display = "none";
       document.getElementById("saveHint").textContent = "";
       if (document.activeElement) document.activeElement.blur();
